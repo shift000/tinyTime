@@ -1,7 +1,7 @@
 import csv
 from io import StringIO
 from flask import Flask, render_template, request, redirect, url_for, jsonify, Response
-from db_funcs import add_time_entry, get_time_entries, get_tasks, get_projects
+from db_funcs import add_time_entry, add_task, add_project, get_time_entries, get_tasks, get_projects
 
 app = Flask(__name__)
 
@@ -26,15 +26,17 @@ def add_entry():
     duration = data.get('duration')
     start_time = data.get('start_time')
     end_time = data.get('end_time')
-    date = data.get('date')
+    date = data.get('date').split("-")
     add_time_entry({
         'task': task,
         'project': project,
         'duration': duration,
-        'start_time': start_time,
-        'end_time': end_time,
-        'date': date
+        'start_time': start_time.split("T")[1].split(".")[0],
+        'end_time': end_time.split("T")[1].split(".")[0],
+        'date': f'{date[2]}.{date[1]}.{date[0]}'
     })
+    add_task(task)
+    add_project(project)
     return jsonify({'status': 'success', 'task': task, 'project': project, 'duration': duration})
 
 @app.route('/export_csv')
