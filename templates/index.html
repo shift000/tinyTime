@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyTime</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .frame {
+            width: 80%;
+            max-width: 800px;
+            height: 60%;
+            margin: auto;
+            box-sizing: border-box;
+            border: 2px solid #c2c2c2;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .fhead {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.5em;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .fbody {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .ffoot {
+            background-color: #f1f1f1;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9em;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        .time-entry {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fafafa;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .time-entry.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .track-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .track-link:hover {
+            background-color: #45a049;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .export-button {
+            background-color: #4CAF50;
+            color: white;
+            margin: 10px 0;
+        }
+        .export-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="frame">
+        <div class="fhead">
+            TinyTime
+        </div>
+        <div class="fbody">
+            {% if entries %}
+                {% for entry in entries %}
+                    <div class="time-entry">
+                        <strong>Task:</strong> {{ entry.task }}<br>
+                        <strong>Project:</strong> {{ entry.project }}<br>
+                        <strong>Duration:</strong> {{ entry.duration }}<br>
+                        <strong>Start Time:</strong> {{ entry.start_time }}<br>
+                        <strong>End Time:</strong> {{ entry.end_time }}<br>
+                        <strong>Date:</strong> {{ entry.date }}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No entries found.</p>
+            {% endif %}
+            <a href="{{ url_for('track') }}" class="track-link">Neue Zeit erfassen</a>
+            <a href="{{ url_for('export_csv') }}" class="track-link">Export to CSV</a>
+        </div>
+        <div class="ffoot">
+            &copy; 2024 TinyTime
+        </div>
+    </div>
+
+    <script>
+        function animateEntries() {
+            const entries = document.querySelectorAll('.time-entry');
+            entries.forEach((entry, index) => {
+                setTimeout(() => {
+                    entry.classList.add('visible');
+                }, index * 100);
+            });
+        }
+
+        window.onload = animateEntries;
+    </script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyTime - Time Tracking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 20px;
+            border: 2px solid #c2c2c2;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        select, input[type="text"], .date-display {
+            width: 45%;
+            padding: 10px;
+            margin: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        select {
+            width: 45%;
+        }
+        .date-display {
+            font-size: 1em;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .start-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .stop-button {
+            background-color: #f44336;
+            color: white;
+        }
+        .timer {
+            font-size: 1.5em;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .back-button {
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TinyTime - Time Tracking</h1>
+        <form id="timeForm">
+            <div class="input-group">
+                <label for="task-select">Tätigkeit:</label>
+                <select id="task-select" name="task-select">
+                    <option value="neu">Neu...</option>
+                    {% for task in tasks %}
+                        <option value="{{ task }}">{{ task }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" id="task-input" name="task-input" placeholder="Gib eine neue Tätigkeit ein">
+            </div>
+            <div class="input-group">
+                <label for="project-select">Projektname:</label>
+                <select id="project-select" name="project-select">
+                    <option value="neu">Neu...</option>
+                    {% for project in projects %}
+                        <option value="{{ project }}">{{ project }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" id="project-input" name="project-input" placeholder="Gib ein neues Projekt ein">
+            </div>
+            <div class="input-group">
+                <label>Datum:</label>
+                <div class="date-display" id="date-display"></div>
+            </div>
+            <div class="timer" id="timer">00:00:00</div>
+            <div class="button-group">
+                <button type="button" class="start-button" onclick="startTimer()">Start</button>
+                <button type="button" class="stop-button" onclick="stopTimer()">Stopp</button>
+            </div>
+        </form>
+        <a href="{{ url_for('index') }}" class="back-button">Zurück zur Übersicht</a>
+    </div>
+
+    <script>
+        let timer;
+        let startTime;
+        let elapsedTime = 0;
+
+        function startTimer() {
+            startTime = new Date();
+            timer = setInterval(() => {
+                elapsedTime = new Date() - startTime;
+                document.getElementById('timer').textContent = timeToString(elapsedTime);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timer);
+            const endTime = new Date();
+            const duration = timeToString(elapsedTime);
+
+            const taskSelect = document.getElementById('task-select');
+            const taskInput = document.getElementById('task-input');
+            const projectSelect = document.getElementById('project-select');
+            const projectInput = document.getElementById('project-input');
+            const dateDisplay = document.getElementById('date-display');
+
+            const task = taskSelect.value === 'neu' ? taskInput.value : taskSelect.value;
+            const project = projectSelect.value === 'neu' ? projectInput.value : projectSelect.value;
+            const date = dateDisplay.textContent;
+
+            fetch('/add_entry', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    task: task,
+                    project: project,
+                    duration: duration,
+                    start_time: startTime.toISOString(),
+                    end_time: endTime.toISOString(),
+                    date: date
+                })
+            }).then(response => response.json())
+              .then(data => {
+                  alert(`Time tracked: Projekt ${project} [${duration}]`);
+                  document.getElementById('timeForm').reset();
+                  document.getElementById('timer').textContent = '00:00:00';
+                  elapsedTime = 0;
+              });
+        }
+
+        function timeToString(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            return `${pad(hours)}:${pad(minutes % 60)}:${pad(seconds % 60)}`;
+        }
+
+        function pad(value) {
+            return value.toString().padStart(2, '0');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            document.getElementById('date-display').textContent = dateStr;
+        });
+    </script>
+</body>
+</html>
