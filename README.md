@@ -42,4 +42,12 @@ TinyTime ist ein einfaches Zeiterfassungstool, das es dir ermöglicht, deine Arb
   Der Server wird auf http://127.0.0.1:5000/ gestartet und kann über den Browser geöffnet werden.
 
 
+## Lizenz
+
+Dieses Projekt ist unter der GNU General Public License (GPL) lizenziert. Siehe [LICENSE](LICENSE) für Details.
+
+## Haftungsausschluss
+
+Dieses Programm wurde schnell erstellt und kann Fehler oder Bugs enthalten. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieses Programms entstehen könnten. Die Nutzung erfolgt auf eigene Verantwortung.
+
   
