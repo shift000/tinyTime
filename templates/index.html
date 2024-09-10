@@ -7,13 +7,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #fff;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            
         }
         .frame {
             width: 80%;
@@ -21,30 +22,39 @@
             height: 60%;
             margin: auto;
             box-sizing: border-box;
-            border: 2px solid #c2c2c2;
-            border-radius: 8px;
+            border: 2px solid #336b87;
+            /*border-radius: 8px;*/
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            padding:10px;
         }
         .fhead {
-            background-color: #4CAF50;
+            background-color: #336b87;
             color: white;
             padding: 10px;
-            text-align: center;
+            text-align: left;
             font-size: 1.5em;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            /*border-top-left-radius: 8px;
+            border-top-right-radius: 8px;*/
         }
         .fbody {
-            padding: 20px;
             flex-grow: 1;
+            overflow-y: scroll;
+            box-sizing:border-box;
+        }
+        .control {
+            padding: 5px;
+            /*flex-grow: 1;*/
             overflow-y: auto;
+            margin-bottom:5px;
+            background-color:#336b87;
+            min-height:40px;
         }
         .ffoot {
-            background-color: #f1f1f1;
+            background-color: 90afc5;
             padding: 10px;
             text-align: center;
             font-size: 0.9em;
@@ -53,9 +63,9 @@
         }
         .time-entry {
             margin-bottom: 10px;
+            box-sizing:border-box;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: 1px solid #2a3132;
             background-color: #fafafa;
             opacity: 0;
             transform: translateY(20px);
@@ -67,17 +77,16 @@
         }
         .track-link {
             display: inline-block;
-            margin-top: 20px;
             text-align: center;
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #336b87;
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-right:2px solid #c2c2c2;
             transition: background-color 0.3s;
         }
         .track-link:hover {
-            background-color: #45a049;
+            background-color: #447c98;
         }
         button {
             padding: 10px 20px;
@@ -93,30 +102,41 @@
         .export-button:hover {
             background-color: #45a049;
         }
+        p{
+            padding-top:20px;   
+            padding-left:20px;   
+        }
+        table{
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 2px solid #2a3132;
+        }
     </style>
 </head>
 <body>
     <div class="frame">
         <div class="fhead">
-            TinyTime
+           TinyTime
         </div>
         <div class="fbody">
             {% if entries %}
                 {% for entry in entries %}
                     <div class="time-entry">
-                        <strong>Task:</strong> {{ entry.task }}<br>
-                        <strong>Project:</strong> {{ entry.project }}<br>
-                        <strong>Duration:</strong> {{ entry.duration }}<br>
-                        <strong>Start Time:</strong> {{ entry.start_time }}<br>
-                        <strong>End Time:</strong> {{ entry.end_time }}<br>
-                        <strong>Date:</strong> {{ entry.date }}
+                        <strong>Aufgabe :</strong> {{ entry.task }}&nbsp;&nbsp;&nbsp;<strong>Projekt :</strong> {{ entry.project }}
+                        <table>
+                            <tr><td><strong>Startzeit</strong>&nbsp;&nbsp;</td><td><strong>Dauer&nbsp;&nbsp;</td><td><strong>Endzeit&nbsp;&nbsp;</strong></td><td><strong>Datum</strong></td></tr>
+                            <tr><td>{{ entry.start_time }}&nbsp;&nbsp;</td><td>{{ entry.duration }}&nbsp;&nbsp;</td><td>{{ entry.end_time }}&nbsp;&nbsp;</td><td>{{ entry.date }}</td></tr>
+                        </table>
                     </div>
                 {% endfor %}
             {% else %}
-                <p>No entries found.</p>
+                <p>Keine Einträge vorhanden.<br/>
+            Erstelle neue über "Neue Zeit erfassen"!</p>
             {% endif %}
+        </div>
+        <div class="control">
             <a href="{{ url_for('track') }}" class="track-link">Neue Zeit erfassen</a>
-            <a href="{{ url_for('export_csv') }}" class="track-link">Export to CSV</a>
+            <a href="{{ url_for('export_csv') }}" class="track-link">In CSV exportieren</a>
         </div>
         <div class="ffoot">
             &copy; 2024 TinyTime

@@ -45,7 +45,9 @@ def export_csv():
     entries = get_time_entries()
     output = StringIO()
     writer = csv.writer(output)
-    writer.writerow(['Task', 'Project', 'Duration', 'Start Time', 'End Time', 'Date'])
+    writer.writerow(['Aufgabe', 'Projekt', 'Dauer', 'Startzeit', 'Endzeit', 'Datum'])
+
+    filename = ''
     
     for entry in entries:
         writer.writerow([
@@ -56,12 +58,15 @@ def export_csv():
             entry.get('end_time'),
             entry.get('date')
         ])
+        if not filename:
+            filename = entry.get('date')
+            filename = f'tasklist-{filename.replace(".", "-")}.csv'
     
     output.seek(0)
     return Response(
         output,
         mimetype="text/csv",
-        headers={"Content-Disposition": "attachment;filename=time_entries.csv"}
+        headers={"Content-Disposition": f"attachment;filename={filename}"}
     )
 
 def start_gui():
