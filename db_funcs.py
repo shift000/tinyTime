@@ -1,5 +1,6 @@
 from tinydb import TinyDB, Query
 from datetime import datetime
+import os
 
 def out(msg, title=""):
     print(f'{title}:: {msg}')
@@ -8,6 +9,8 @@ def out(msg, title=""):
 DB_PATH = 'data/tinydb.json'
 
 def initialize_db():
+    if not os.path.exists('./data'):
+        os.mkdir('./data')
     """Initialisiert die TinyDB-Datenbank und erstellt notwendige Tabellen."""
     db = TinyDB(DB_PATH)
     # Hier werden die Tabellen erstellt, wenn sie nicht existieren
