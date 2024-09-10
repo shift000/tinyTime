@@ -153,6 +153,9 @@
             const project = projectSelect.value === 'neu' ? projectInput.value : projectSelect.value;
             const date = dateDisplay.textContent;
 
+            const startTimeLocal = startTime.toLocaleString('de-DE', { hour12: false }); 
+            const endTimeLocal = endTime.toLocaleString('de-DE', { hour12: false });
+
             fetch('/add_entry', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -160,8 +163,8 @@
                     task: task,
                     project: project,
                     duration: duration,
-                    start_time: startTime.toISOString(),
-                    end_time: endTime.toISOString(),
+                    start_time: startTimeLocal,
+                    end_time: endTimeLocal,
                     date: date
                 })
             }).then(response => response.json())
