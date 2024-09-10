@@ -27,12 +27,13 @@ def add_entry():
     start_time = data.get('start_time')
     end_time = data.get('end_time')
     date = data.get('date').split("-")
+    
     add_time_entry({
         'task': task,
         'project': project,
         'duration': duration,
-        'start_time': start_time.split("T")[1].split(".")[0],
-        'end_time': end_time.split("T")[1].split(".")[0],
+        'start_time': start_time.split(",")[1].strip(),
+        'end_time': end_time.split(",")[1].strip(),
         'date': f'{date[2]}.{date[1]}.{date[0]}'
     })
     add_task(task)
